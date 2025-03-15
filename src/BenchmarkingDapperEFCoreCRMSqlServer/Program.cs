@@ -48,30 +48,30 @@ else
     Console.WriteLine($"Falha na execucao das Migrations do DbUp: {result.Error.Message}");
 }
 
+string[] databases = ["BaseCRMEF", "BaseCRMDapper", "BaseCRMDapperContrib", "BaseCRMADO"];
+foreach (string database in databases)
+{
+    Console.WriteLine();
+    Console.WriteLine($"# Amostragem de registros criados na base {database}");
+
+    Console.WriteLine();
+    Console.WriteLine("*** Empresas ***");
+    var resultSelectEmpresas = await msSqlContainer.ExecScriptAsync(
+        $"USE {database}; SELECT TOP 10 * FROM dbo.Empresas;");
+    Console.WriteLine(resultSelectEmpresas.Stdout);
+
+    Console.WriteLine();
+    Console.WriteLine("*** Contatos ***");
+    var resultSelect = await msSqlContainer.ExecScriptAsync(
+        $"USE {database}; SELECT TOP 30 * FROM dbo.Contatos;");
+    Console.WriteLine(resultSelect.Stdout);
+}
+
 if (Environment.GetEnvironmentVariable("ExecucaoManual") == "true")
 {
 
     Console.WriteLine();
     Console.WriteLine($"Connection String da base de dados master: {connectionString}");
-
-    string[] databases = ["BaseCRMEF", "BaseCRMDapper", "BaseCRMDapperContrib", "BaseCRMADO"];
-    foreach (string database in databases)
-    {
-        Console.WriteLine();
-        Console.WriteLine($"# Amostragem de registros criados na base {database}");
-
-        Console.WriteLine();
-        Console.WriteLine("*** Empresas ***");
-        var resultSelectEmpresas = await msSqlContainer.ExecScriptAsync(
-            $"USE {database}; SELECT TOP 10 * FROM dbo.Empresas;");
-        Console.WriteLine(resultSelectEmpresas.Stdout);
-
-        Console.WriteLine();
-        Console.WriteLine("*** Contatos ***");
-        var resultSelect = await msSqlContainer.ExecScriptAsync(
-            $"USE {database}; SELECT TOP 30 * FROM dbo.Contatos;");
-        Console.WriteLine(resultSelect.Stdout);
-    }
 
     Console.WriteLine();
     Console.WriteLine("Pressione ENTER para interromper a execucao do container...");
